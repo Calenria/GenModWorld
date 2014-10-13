@@ -1,0 +1,8 @@
+name: BlockReplace
+main: com.github.calenria.blockreplacer.BlockReplace
+version: 0.1
+website: https://github.com/Calenria/BlockReplace
+author: Calenria
+description: BlockReplace!
+database: false
+depend: [Vault, WorldEdit]
