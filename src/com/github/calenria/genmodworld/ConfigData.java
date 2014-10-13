@@ -15,7 +15,7 @@
  * along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
-package com.github.calenria.blockreplacer;
+package com.github.calenria.genmodworld;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class ConfigData {
      * @param plugin
      *            BungeeTools Plugin
      */
-    public ConfigData(final BlockReplace plugin) {
+    public ConfigData(final GenModWorld plugin) {
         FileConfiguration config = plugin.getConfig();
         setReplace(config.getStringList("replace"));
     }

@@ -15,7 +15,7 @@
  * along with this program. If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
  */
-package com.github.calenria.blockreplacer;
+package com.github.calenria.genmodworld;
 
 import java.io.File;
 import java.util.logging.Level;
@@ -29,7 +29,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.github.calenria.blockreplacer.commands.BlockReplaceCommands;
+import com.github.calenria.genmodworld.commands.GenModWorldCommands;
 import com.sk89q.bukkit.util.CommandsManagerRegistration;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissionsException;
@@ -44,7 +44,7 @@ import com.sk89q.minecraft.util.commands.WrappedCommandException;
  * 
  * @author Calenria
  */
-public class BlockReplace extends JavaPlugin {
+public class GenModWorld extends JavaPlugin {
     /**
      * Standart Bukkit Logger.
      */
@@ -146,7 +146,7 @@ public class BlockReplace extends JavaPlugin {
 
         commands.setInjector(new SimpleInjector(this));
         CommandsManagerRegistration cmdRegister = new CommandsManagerRegistration(this, this.commands);
-        cmdRegister.register(BlockReplaceCommands.class);
+        cmdRegister.register(GenModWorldCommands.class);
     }
 
     /**

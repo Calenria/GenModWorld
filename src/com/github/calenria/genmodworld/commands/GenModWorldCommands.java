@@ -1,4 +1,4 @@
-package com.github.calenria.blockreplacer.commands;
+package com.github.calenria.genmodworld.commands;
 
 import java.util.List;
 
@@ -9,24 +9,24 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 
-import com.github.calenria.blockreplacer.BlockReplace;
+import com.github.calenria.genmodworld.GenModWorld;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
 
-public class BlockReplaceCommands {
+public class GenModWorldCommands {
     /**
-     * BlockReplace Plugin.
+     * GenModWorld Plugin.
      */
-    final private BlockReplace plugin;
+    final private GenModWorld plugin;
 
     /**
      * @param brPlugin
-     *            BlockReplace Plugin
+     *            GenModWorld Plugin
      * @return
      */
-    public BlockReplaceCommands(final BlockReplace brPlugin) {
+    public GenModWorldCommands(final GenModWorld brPlugin) {
         this.plugin = brPlugin;
     }
 
