@@ -1,8 +1,8 @@
-name: BlockReplace
-main: com.github.calenria.blockreplacer.BlockReplace
+name: GenModWorld
+main: com.github.calenria.genmodworld.GenModWorld
 version: 0.1
-website: https://github.com/Calenria/BlockReplace
+website: https://github.com/Calenria/GenModWorld
 author: Calenria
-description: BlockReplace!
+description: GenModWorld!
 database: false
 depend: [Vault, WorldEdit]

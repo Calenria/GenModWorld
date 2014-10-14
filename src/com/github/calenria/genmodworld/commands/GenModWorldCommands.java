@@ -1,13 +1,20 @@
 package com.github.calenria.genmodworld.commands;
 
 import java.util.List;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
+import org.bukkit.Difficulty;
 import org.bukkit.World;
+import org.bukkit.WorldCreator;
+import org.bukkit.WorldType;
+import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
+
+import biomesoplenty.world.WorldTypeBOP;
 
 import com.github.calenria.genmodworld.GenModWorld;
 import com.sk89q.minecraft.util.commands.Command;
@@ -34,36 +41,16 @@ public class GenModWorldCommands {
     @CommandPermissions("blockreplace.replace")
     public final void breplace(final CommandContext args, final CommandSender sender) throws CommandException {
         String sworld = args.getString(0);
-        World world = Bukkit.getWorld(sworld);
-        Chunk[] chunks = world.getLoadedChunks();
-        int cnt = 0;
-        if (args.argsLength() == 1) {
-            List<String> replaces = plugin.config.getReplace();
-            for (Chunk chunk : chunks) {
-                for (String repl : replaces) {
-                    String[] tmp = repl.split(",");
-                    String[] mats = tmp[0].split(":");
-                    String[] remats = tmp[1].split(":");
-                    Integer matid = Integer.parseInt(mats[0]);
-                    byte dataid = ((Integer) Integer.parseInt(mats[1])).byteValue();
-                    int rematid = Integer.parseInt(remats[0]);
-                    byte redataid = ((Integer) Integer.parseInt(remats[1])).byteValue();
-                    cnt += replaceBlocks(chunk, matid, dataid, rematid, redataid);
-                }
-            }
-        } else {
-            for (Chunk chunk : chunks) {
-                String[] mats = args.getString(1).split(":");
-                String[] remats = args.getString(2).split(":");
-                Integer matid = Integer.parseInt(mats[0]);
-                byte dataid = ((Integer) Integer.parseInt(mats[1])).byteValue();
-                int rematid = Integer.parseInt(remats[0]);
-                byte redataid = ((Integer) Integer.parseInt(remats[1])).byteValue();
-                cnt += replaceBlocks(chunk, matid, dataid, rematid, redataid);
-            }
-        }
-
-        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6" + cnt + " &4 Blöcke ersetzt"));
+        WorldCreator wc = new WorldCreator("GMW-" + sworld);
+        wc.type(WorldType.getByName("BIOMESOP"));
+        wc.environment(Environment.NORMAL);
+        wc.seed(new Random().nextLong());
+        wc.generator("BIOMESOP");
+        World newWorld = wc.createWorld();
+        newWorld.setDifficulty(Difficulty.NORMAL);
+        newWorld.setAutoSave(true);
+        newWorld.setKeepSpawnInMemory(false);
+        newWorld.setTime(0L);
     }
 
     private int replaceBlocks(Chunk chunk, Integer matid, byte dataid, int rematid, byte redataid) {
