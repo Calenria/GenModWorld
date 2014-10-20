@@ -1,2 +1,4 @@
-replace:
-  - '35:3,0:0'
+lang: de
+lastWorldNumber: 0
+worldPraefix: MyFTB
+exportDir: ./export

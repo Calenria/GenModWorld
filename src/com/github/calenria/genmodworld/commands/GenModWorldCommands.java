@@ -1,20 +1,15 @@
 package com.github.calenria.genmodworld.commands;
 
-import java.util.List;
-import java.util.Random;
+import java.io.File;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
-import org.bukkit.Difficulty;
-import org.bukkit.World;
 import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
-import org.bukkit.World.Environment;
-import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
-
-import biomesoplenty.world.WorldTypeBOP;
 
 import com.github.calenria.genmodworld.GenModWorld;
 import com.sk89q.minecraft.util.commands.Command;
@@ -24,49 +19,93 @@ import com.sk89q.minecraft.util.commands.CommandPermissions;
 
 public class GenModWorldCommands {
     /**
+     * Bukkit Logger.
+     */
+    private static Logger log = Logger.getLogger("Minecraft");
+    /**
      * GenModWorld Plugin.
      */
-    final private GenModWorld plugin;
+    private GenModWorld plugin;
 
     /**
      * @param brPlugin
      *            GenModWorld Plugin
      * @return
      */
-    public GenModWorldCommands(final GenModWorld brPlugin) {
+    public GenModWorldCommands(GenModWorld brPlugin) {
         this.plugin = brPlugin;
     }
 
-    @Command(aliases = { "breplace" }, desc = "Ersetzt  blöcke in allen geladenen Chunks", usage = "<welt> [itemid:data] [itemid:data]", min = 1, max = 3)
-    @CommandPermissions("blockreplace.replace")
-    public final void breplace(final CommandContext args, final CommandSender sender) throws CommandException {
-        String sworld = args.getString(0);
-        WorldCreator wc = new WorldCreator("GMW-" + sworld);
-        wc.type(WorldType.getByName("BIOMESOP"));
-        wc.environment(Environment.NORMAL);
-        wc.seed(new Random().nextLong());
-        wc.generator("BIOMESOP");
-        World newWorld = wc.createWorld();
-        newWorld.setDifficulty(Difficulty.NORMAL);
-        newWorld.setAutoSave(true);
-        newWorld.setKeepSpawnInMemory(false);
-        newWorld.setTime(0L);
+    /**
+     * Lädt das Plugin neu.
+     * 
+     * @param args
+     *            Sollte leer sein
+     * @param sender
+     *            Absender des Befehls
+     * @throws com.sk89q.minecraft.util.commands.CommandException
+     *             CommandException
+     */
+    @Command(aliases = { "gwreload" }, desc = "Läd das Plugin neu", usage = "reload")
+    @CommandPermissions("genworld.reload")
+    public final void reload(final CommandContext args, final CommandSender sender) throws CommandException {
+        plugin.setupConfig();
+        sender.sendMessage(String.format("[%s] reloaded Version %s", plugin.getDescription().getName(), plugin.getDescription().getVersion()));
+        log.log(Level.INFO, String.format("[%s] reloaded Version %s", plugin.getDescription().getName(), plugin.getDescription().getVersion()));
     }
 
-    private int replaceBlocks(Chunk chunk, Integer matid, byte dataid, int rematid, byte redataid) {
-        int cnt = 0;
-        for (int x = 0; x < 16; x++) {
-            for (int y = 0; y < 256; y++) {
-                for (int z = 0; z < 16; z++) {
-                    Block block = chunk.getBlock(x, y, z);
-                    if (block.getTypeId() == matid && block.getData() == dataid) {
-                        block.setTypeIdAndData(rematid, redataid, true);
-                        cnt++;
-                    }
-                }
-            }
+    @Command(aliases = { "genworld" }, desc = "Erzeugt eine Welt", usage = "<welt>", min = 1, max = 1)
+    @CommandPermissions("genworld.gen")
+    public final void genworld(final CommandContext args, final CommandSender sender) throws CommandException {
+        String sworld = args.getString(0);
+        String worldName = sworld;
+        plugin.doWorldGen(worldName);
+    }
+
+    @Command(aliases = { "genworlds" }, desc = "Erzeugt eine bestimmte anzahl von Welten", usage = "[<anzahl>]", min = 0, max = 1)
+    @CommandPermissions("genworld.gen")
+    public final void genworlds(final CommandContext args, final CommandSender sender) throws CommandException {
+
+        Integer count = 0;
+
+        if (args.argsLength() > 0) {
+            count = args.getInteger(0);
+        } else {
+            count = 10;
         }
 
-        return cnt;
+        plugin.genWorlds(count);
+
+    }
+
+    @Command(aliases = { "tpw" }, desc = "Portet in eine Welt", usage = "<welt>", min = 1, max = 1)
+    @CommandPermissions("genworld.tpw")
+    public final void tpw(final CommandContext args, final CommandSender sender) throws CommandException {
+        String sworld = args.getString(0);
+        String worldFolder = Bukkit.getWorld("world").getWorldFolder().getPath();
+
+        File world = new File(worldFolder + "/" + sworld);
+
+        log.log(Level.INFO, "Teleporting to World: " + world.toString());
+
+        log.log(Level.INFO, "Teleporting to World: " + world.getName());
+
+        if (world.isDirectory()) {
+            Bukkit.getPlayer(sender.getName()).teleport(Bukkit.createWorld(new WorldCreator(sworld)).getSpawnLocation());
+        } else {
+            sender.sendMessage("Welt existiert nicht!");
+        }
+
+    };
+
+    public static Collection<File> listFileTree(File dir) {
+        Set<File> fileTree = new HashSet<File>();
+        for (File entry : dir.listFiles()) {
+            if (entry.isFile())
+                fileTree.add(entry);
+            else
+                fileTree.addAll(listFileTree(entry));
+        }
+        return fileTree;
     }
 }
