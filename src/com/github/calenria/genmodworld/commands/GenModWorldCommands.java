@@ -67,7 +67,6 @@ public class GenModWorldCommands {
     public final void genworlds(final CommandContext args, final CommandSender sender) throws CommandException {
 
         Integer count = 0;
-
         if (args.argsLength() > 0) {
             count = args.getInteger(0);
         } else {
@@ -75,7 +74,6 @@ public class GenModWorldCommands {
         }
 
         plugin.genWorlds(count);
-
     }
 
     @Command(aliases = { "tpw" }, desc = "Portet in eine Welt", usage = "<welt>", min = 1, max = 1)
@@ -85,9 +83,7 @@ public class GenModWorldCommands {
         String worldFolder = Bukkit.getWorld("world").getWorldFolder().getPath();
 
         File world = new File(worldFolder + "/" + sworld);
-
         log.log(Level.INFO, "Teleporting to World: " + world.toString());
-
         log.log(Level.INFO, "Teleporting to World: " + world.getName());
 
         if (world.isDirectory()) {

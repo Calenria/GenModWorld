@@ -32,9 +32,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Difficulty;
 import org.bukkit.World;
+import org.bukkit.World.Environment;
 import org.bukkit.WorldCreator;
 import org.bukkit.WorldType;
-import org.bukkit.World.Environment;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -177,7 +177,7 @@ public class GenModWorld extends JavaPlugin {
 
     public void genWorlds(Integer count) {
         this.setupConfig();
-        
+
         Integer from = 0;
         Integer to = 0;
         String worldPraefix = this.getPluginConfig().getWorldPraefix();
@@ -242,24 +242,30 @@ public class GenModWorld extends JavaPlugin {
         newWorld.setKeepSpawnInMemory(false);
         newWorld.save();
         Bukkit.unloadWorld(newWorld, true);
-        
+
         log.log(Level.INFO, "Moving world: " + worldName + " to " + this.getPluginConfig().getExportDir());
-        
+
         File worldDir = newWorld.getWorldFolder();
         File exportWorldDir = new File(this.getPluginConfig().getExportDir() + "/" + worldName);
-        if(worldDir.isDirectory()) {
-            
+        if (worldDir.isDirectory()) {
+
             try {
                 FileUtils.moveDirectory(worldDir, exportWorldDir);
-                new File(exportWorldDir+"/session.lock").delete();
+                Runtime run = Runtime.getRuntime();
+                Process pr = run.exec("chmod -R 777 " + exportWorldDir);
+                pr.waitFor();
+                new File(exportWorldDir + "/session.lock").delete();
             } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
-        
-        
+
     };
+
     /**
      * Initialisierung der Plugin Befehle.
      */
@@ -287,7 +293,6 @@ public class GenModWorld extends JavaPlugin {
             this.reloadConfig();
         }
         this.config = new ConfigData(this);
-
     }
 
     /**
